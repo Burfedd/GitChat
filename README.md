@@ -11,4 +11,4 @@ Each feature and new functionality should have an issue associated with it, ment
 
 Each pull request should have an Issue associated with it, so that completing Pull request automatically solves an issue
 
-Branching and naming strategies are described in Wiki and should be followed
+Branching and naming strategies are described in [Wiki](https://github.com/Burfedd/GitChat/wiki/Development-guidelines) and should be followed
