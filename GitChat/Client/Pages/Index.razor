@@ -4,6 +4,35 @@
 @implements IAsyncDisposable
 
 <PageTitle>Index</PageTitle>
+@*TODO: Remove*@
+@*<div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput" />
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+*@
+<div class="form-group">
+    <label>
+        Create group:
+        <input @bind="groupName" size="50" />
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput" />
+    </label>
+</div>
+<button @onclick="JoinGroup" disabled="@(!IsConnected)">Send</button>
+
 
 <div class="form-group">
     <label>
@@ -17,7 +46,14 @@
         <input @bind="messageInput" size="50" />
     </label>
 </div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<div class="form-group">
+    <label>
+        Group:
+        <input @bind="groupName" size="50" />
+    </label>
+</div>
+<button @onclick="SendToGroup" disabled="@(!IsConnected)">Send</button>
+
 
 <hr>
 
@@ -33,6 +69,7 @@
     private List<string> messages = new List<string>();
     private string? userInput;
     private string? messageInput;
+    private string? groupName;
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,7 +77,7 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string, string, string>("ReceiveMessage", (user, group, message) =>
         {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
@@ -48,6 +85,22 @@
         });
 
         await hubConnection.StartAsync();
+    }
+
+    private async Task JoinGroup()
+    {
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("JoinGroup", groupName, userInput);
+        }
+    }
+
+    private async Task SendToGroup()
+    {
+        if (hubConnection is not null)
+            {
+                await hubConnection.SendAsync("SendToGroup", groupName, userInput, messageInput);
+            }
     }
 
     private async Task Send()
