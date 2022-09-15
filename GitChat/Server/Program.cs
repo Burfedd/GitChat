@@ -1,3 +1,4 @@
+using GitChat.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 
 namespace GitChat
@@ -10,10 +11,19 @@ namespace GitChat
 
             // Add services to the container.
 
+
+            builder.Services.AddSignalR();
+            builder.Services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
+
+            app.UseResponseCompression();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -37,6 +47,7 @@ namespace GitChat
 
             app.MapRazorPages();
             app.MapControllers();
+            app.MapHub<ChatHub>("/chathub");
             app.MapFallbackToFile("index.html");
 
             app.Run();
