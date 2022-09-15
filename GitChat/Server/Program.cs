@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.ResponseCompression;
+using GitChat.Server.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GitChat
 {
@@ -9,7 +10,7 @@ namespace GitChat
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "DefaultConnection")));
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
