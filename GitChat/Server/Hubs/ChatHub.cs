@@ -1,9 +1,17 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using GitChat.Server.Services;
+using Microsoft.AspNetCore.SignalR;
 
 namespace GitChat.Server.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly IChatService chatservice;
+
+        public ChatHub(IChatService chatservice)
+        {
+            this.chatservice = chatservice;
+        }
+
         public override Task OnConnectedAsync()
         {
             var name = Context.GetHttpContext().Request.Query["name"];
@@ -30,6 +38,13 @@ namespace GitChat.Server.Hubs
 
         public async Task JoinGroup(string groupName, string name)
         {
+            var group = chatservice.FindChat(groupName);
+
+            if (group == null)
+            {
+                //TODO: IRepository.Add(group);
+            }
+
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
             await Clients.Group(groupName).SendAsync("Send", $"{name} joined {groupName}");

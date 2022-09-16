@@ -1,5 +1,8 @@
 using GitChat.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using GitChat.Server.Data;
+using Microsoft.EntityFrameworkCore;
+using GitChat.Server.Services;
 
 namespace GitChat
 {
@@ -20,6 +23,7 @@ namespace GitChat
             });
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             var app = builder.Build();
 
