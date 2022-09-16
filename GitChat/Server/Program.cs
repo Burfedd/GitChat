@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using GitChat.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using GitChat.Server.Repository;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 namespace GitChat
 {
@@ -23,12 +25,15 @@ namespace GitChat
                     new[] { "application/octet-stream" });
             });
 
-            //TODO: Remove
-            //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "DefaultConnection")));
-
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
             
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentityServer().AddApiAuthorization<IdentityUser, ApplicationDbContext>();
+            builder.Services.AddAuthentication().AddIdentityServerJwt();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -56,6 +61,9 @@ namespace GitChat
 
             app.UseRouting();
 
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorPages();
             app.MapControllers();
