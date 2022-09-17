@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using GitChat.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using GitChat.Server.Services;
+using GitChat.Server.Repository;
 
 namespace GitChat
 {
@@ -12,6 +13,7 @@ namespace GitChat
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
             // Add services to the container.
 
 
@@ -21,6 +23,14 @@ namespace GitChat
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+
+            //TODO: Remove
+            //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConfigurationExtensions.GetConnectionString(builder.Configuration, "DefaultConnection")));
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+            
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<IChatService, ChatService>();

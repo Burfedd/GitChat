@@ -4,9 +4,9 @@ namespace GitChat.Server.Services
 {
     public interface IChatService
     {
-        void AddGroupChat(string groupname);
+        Task AddGroupChat(string groupname);
 
-        void RemoveGroupChat(int id);
+        Task RemoveGroupChat(int id);
 
         Group FindChat(string groupname);
     }

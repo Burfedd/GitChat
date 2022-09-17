@@ -42,7 +42,7 @@ namespace GitChat.Server.Hubs
 
             if (group == null)
             {
-                //TODO: IRepository.Add(group);
+                await chatservice.AddGroupChat(groupName);
             }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);

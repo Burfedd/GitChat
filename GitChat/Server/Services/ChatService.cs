@@ -1,25 +1,48 @@
 ﻿using GitChat.Server.Models;
+using GitChat.Server.Repository;
 
 namespace GitChat.Server.Services
 {
     public class ChatService : IChatService
     {
-        public void AddGroupChat(string groupname)
+        private readonly IRepository<Group> repository;
+
+        public ChatService(IRepository<Group> repository)
+        {
+            this.repository = repository;
+        }
+
+        public async Task AddGroupChat(string groupname)
         {
             var groupchat = new Group();
             groupchat.GroupName = groupname;
 
-            //TODO: Functionality to add group to DB
+            repository.Add(groupchat);
+            await repository.SaveChangesAsync();
         }
 
-        public void RemoveGroupChat(int id)
+        public async Task RemoveGroupChat(int id)
         {
-            //TODO: Get chat from DB and remove it
+            var group = await repository.GetByIdAsync(id);
+            if(group == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            repository.Delete(group);
+            await repository.SaveChangesAsync();
         }
 
         public Group FindChat(string groupname)
         {
-            throw new NotImplementedException();
+            var group = repository.Find(x => x.GroupName == groupname).FirstOrDefault();
+
+            if(group == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return group;
         }
     }
 }
