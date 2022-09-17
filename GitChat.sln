@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitChat.Server", "GitChat\Server\GitChat.Server.csproj", "{D0029229-9E2B-42E0-8E17-37D98CA7A59D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitChat.Server", "GitChat\Server\GitChat.Server.csproj", "{D0029229-9E2B-42E0-8E17-37D98CA7A59D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitChat.Client", "GitChat\Client\GitChat.Client.csproj", "{2DC533F5-DE05-4070-9A2F-AE96684658E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitChat.Client", "GitChat\Client\GitChat.Client.csproj", "{2DC533F5-DE05-4070-9A2F-AE96684658E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitChat.Shared", "GitChat\Shared\GitChat.Shared.csproj", "{1E143709-EA33-4646-9DD6-AFE0241F531B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitChat.Shared", "GitChat\Shared\GitChat.Shared.csproj", "{1E143709-EA33-4646-9DD6-AFE0241F531B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
