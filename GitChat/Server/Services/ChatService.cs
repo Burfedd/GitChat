@@ -37,11 +37,6 @@ namespace GitChat.Server.Services
         {
             var group = repository.Find(x => x.GroupName == groupname).FirstOrDefault();
 
-            if(group == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return group;
         }
     }
