@@ -41,9 +41,5 @@
     <None Include="Properties\serviceDependencies.local.json.user" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 
 </Project>

@@ -1,0 +1,72 @@
+﻿@page "/register"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<h1>Register</h1>
+
+@if (ShowErrors)
+{
+    <div class="alert alert-danger" role="alert">
+        @foreach (var error in Errors)
+        {
+            <p>@error</p>
+        }
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Please enter your details</h5>
+        <EditForm Model="RegisterDTO" OnValidSubmit="HandleRegistration">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <InputText Id="username" class="form-control" @bind-Value="RegisterDTO.Username" />
+                <ValidationMessage For="@(() => RegisterDTO.Username)" />
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <InputText Id="email" class="form-control" @bind-Value="RegisterDTO.Email" />
+                <ValidationMessage For="@(() => RegisterDTO.Email)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="RegisterDTO.Password" />
+                <ValidationMessage For="@(() => RegisterDTO.Password)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm Password</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="RegisterDTO.ConfirmPassword" />
+                <ValidationMessage For="@(() => RegisterDTO.ConfirmPassword)" />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    private RegisterDTO RegisterDTO = new RegisterDTO();
+    private bool ShowErrors;
+    private IEnumerable<string> Errors;
+
+    private async Task HandleRegistration()
+    {
+        ShowErrors = false;
+
+        var result = await AuthService.Register(RegisterDTO);
+
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            Errors = result.Errors;
+            ShowErrors = true;
+        }
+    }
+
+}

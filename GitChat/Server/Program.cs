@@ -6,6 +6,9 @@ using GitChat.Server.Services;
 using GitChat.Server.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace GitChat
 {
@@ -37,8 +40,20 @@ namespace GitChat
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddIdentityServer().AddApiAuthorization<IdentityUser, ApplicationDbContext>();
-            builder.Services.AddAuthentication().AddIdentityServerJwt();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["JwtIssuer"],
+                        ValidAudience = builder.Configuration["JwtAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSecurityKey"]))
+                    };
+                });
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -66,8 +81,6 @@ namespace GitChat
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 
