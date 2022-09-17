@@ -1,4 +1,5 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
+using GitChat.Server.Models;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,5 +13,7 @@ namespace GitChat.Server.Data
         {
 
         }
+
+        public DbSet<Group> Groups { get; set; }
     }
 }

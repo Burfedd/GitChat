@@ -2,6 +2,7 @@ using GitChat.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 using GitChat.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using GitChat.Server.Services;
 using GitChat.Server.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +27,11 @@ namespace GitChat
             });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-            
+            using (var context = builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>())
+            {
+                context.Database.Migrate();
+            }
+
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -37,6 +42,7 @@ namespace GitChat
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             var app = builder.Build();
 
