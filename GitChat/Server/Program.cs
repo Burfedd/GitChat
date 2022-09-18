@@ -37,7 +37,22 @@ namespace GitChat
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.Lockout.AllowedForNewUsers = false;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.User.RequireUniqueEmail = false;
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
