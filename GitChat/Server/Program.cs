@@ -95,8 +95,8 @@ namespace GitChat
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
-            app.UseRouting();
             app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
 
             app.MapRazorPages();
