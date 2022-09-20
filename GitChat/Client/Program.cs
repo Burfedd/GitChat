@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using GitChat.Client.Handlers;
 using GitChat.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,7 +16,9 @@ namespace GitChat.Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddTransient<CustomAuthorizationHandler>();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
             builder.Services.AddScoped<IAuthService, AuthService>();

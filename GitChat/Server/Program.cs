@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Components.Authorization;
+using GitChat.Client;
 
 namespace GitChat
 {
@@ -55,14 +57,21 @@ namespace GitChat
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
                 {
+                    options.RequireHttpsMetadata = true;
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        ValidateIssuer = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = builder.Configuration["JwtIssuer"],
                         ValidAudience = builder.Configuration["JwtAudience"],
@@ -98,6 +107,7 @@ namespace GitChat
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseCors(options => options.AllowAnyOrigin());
 
             app.MapRazorPages();
             app.MapControllers();
